@@ -16,8 +16,9 @@ let DrawChessboard = function(){
 	this.margin_bottom = 42;
 	this.gird_size = 64;
 
+	this._basePath = '/home/killer/canvas-img/';
 	this.path = '';
-
+	
 	this.size_x = this.margin_left + this.gird_size*8 + this.margin_right;
 	this.size_y = this.margin_top + this.gird_size*8 + this.margin_bottom;
 
@@ -53,7 +54,10 @@ let DrawChessboard = function(){
 			this.chess[i][j] = 0;
 		}
 	}
-	this.initChessboard();
+	this.initChessboard().catch((err)=>{
+		console.log('Init failure!');
+		console.log(err);
+	});
 };
 
 /**
@@ -96,7 +100,7 @@ DrawChessboard.prototype.saveImg = function(name, dataBuffer){
 DrawChessboard.prototype.createDir = function(){
 	"use strict";
 	return new Promise((resolve, reject)=>{
-		this.path = '/home/killer/canvas-img/' + (new Date()).valueOf();
+		this.path = this._basePath + (new Date()).valueOf();
 		fs.mkdir(this.path,(err)=>{
 			if(err) reject(err);
 			resolve();
@@ -144,7 +148,7 @@ DrawChessboard.prototype.initChessboard = async function(){
 		}
 		console.timeEnd('load Img');
 	}catch (err){
-		console.log('img init wrong');
+		throw err;
 	}
 };
 
@@ -329,4 +333,4 @@ DrawChessboard.prototype.drawChess = function () {
 	}
 };
 
-module.exports = DrawChessboard;
+module.exports = new DrawChessboard();
